@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mr Appliance</title>
+    <!-- Link to Gotham Rounded font -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gotham-fonts@1.0.3/css/gotham-rounded.min.css">
+    <style>
+        /* Body styling */
+        body {
+            background: #fff;
+            color: #333;
+            font-family: 'Gotham Rounded', sans-serif;
+            text-align: left;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        /* Header styling */
+        header {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #333;
+            color: #00f;
+            width: 100%;
+        }
+
+        /* Form styling */
+        form {
+            background-color: rgba(255, 255, 255, 0.8);
+            width: 271px;
+            height: 320px;
+            margin: 1px;
+            padding: 16px 16px;
+            box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            align-self: flex-start;
+        }
+
+        /* Form control styling */
+        .form-control {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        /* Label styling */
+        .form-control label {
+            display: block;
+            margin-bottom: 12px;
+            color: #0B2451;
+            font-weight: bold;
+            font-size: 17px;
+            line-height: 22px;
+        }
+
+        /* Subtitle styling for Preferred Language */
+        .form-control .subtitle {
+            color: #0B2451;
+            font-weight: normal;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        /* Input styling */
+        .form-control input,
+        .form-control select {
+            border: 1px solid #000;
+            border-radius: 8px;
+            font-family: inherit;
+            padding: 10px;
+            display: block;
+            width: calc(100% - 20px);
+            background-color: rgba(255, 255, 255, 0.5);
+            color: #333;
+            font-size: 13px;
+        }
+
+        /* Button styling */
+        button {
+            background-color: #ce360b;
+            border: 0;
+            border-radius: 14px;
+            font-family: inherit;
+            font-size: 14px;
+            display: block;
+            width: 40%;
+            margin-top: 9px;
+            margin-bottom: 20px;
+            color: #fff;
+            padding: 8px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #142651;
+        }
+
+        /* Submission message styling */
+        .submission-message {
+            color: black;
+            text-align: center;
+            margin-top: 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Form -->
+    <form id="form">
+        <!-- Title -->
+        <div class="form-control">
+            <label>Need help? I’m here for you. Let’s get started—tell me about yourself!</label>
+        </div>
+        
+        <!-- Name -->
+        <div class="form-control">
+            <input type="text" id="name" name="name" placeholder="Name" />
+        </div>
+        
+        <!-- Email -->
+        <div class="form-control">
+            <input type="email" id="email" name="email" placeholder="Email" />
+        </div>
+
+        <!-- Preferred Language -->
+        <div class="form-control">
+            <span class="subtitle">Preferred Language</span>
+            <select id="language" name="language">
+                <option value="English" selected>English</option>
+                <option value="Spanish">Spanish</option>
+            </select>
+        </div>
+
+        <!-- Buttons -->
+        <div style="display: flex; justify-content: flex-end;">
+            <button type="button" id="submit-btn">Submit</button>
+        </div>
+        
+        <!-- Submission message -->
+        <div class="submission-message" style="display: none;"></div>
+    </form>
+
+    <!-- jQuery CDN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $(function () {
+            $("#submit-btn").click(function () {
+                // Retrieve form data
+                var name = $("#name").val().trim();
+                var email = $("#email").val().trim();
+                var language = $("#language").val();
+
+                // Validate input fields
+                if (name === '' || email === '') {
+                    alert('Please fill in all fields.');
+                    return;
+                }
+
+                // Validate email format
+                var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(email)) {
+                    alert('Please enter a valid email address.');
+                    return;
+                }
+
+                // Send form data via postMessage
+                window.parent.postMessage(JSON.stringify({
+                    event_code: 'ym-client-event',
+                    data: JSON.stringify({
+                        event: {
+                            code: "userdetails",
+                            data: {
+                                name: name,
+                                email: email,
+                                language: language
+                            }
+                        }
+                    })
+                }), "*");
+
+                // Fade out the form and append thank you message
+                $("#submit-btn").fadeOut("slow", function () {
+                    $(".submission-message").fadeIn("slow").text("Thank you for your submission!");
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
