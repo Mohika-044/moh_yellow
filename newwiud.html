@@ -1,0 +1,245 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Altar'd State</title>
+<link href="https://fonts.googleapis.com/css2?family=Trenda&display=swap" rel="stylesheet">
+<style>
+        /* Body styling */
+        body {
+            background: #fff;
+            color: #333;
+            font-family: 'Trenda', sans-serif;
+            text-align: left;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        /* Form styling */
+        form {
+            background-color: #FAEEEA; /* Accent color */
+            width: 255px;
+            height: auto; /* Adjust to content */
+            padding: 16px;
+            box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.2);
+            border-radius: 0; /* Sharp corners */
+            align-self: flex-start;
+            border: none; /* Remove margin */
+        }
+
+        /* Form control styling */
+        .form-control {
+            text-align: left;
+            margin-bottom: 10px; /* Adjusted margin */
+        }
+
+        /* Label styling */
+        .form-control label {
+            display: block;
+            margin-bottom: 8px; /* Adjusted margin */
+            color: black; /* Changed to black */
+            font-weight: bold;
+            font-size: 14px; /* Reduced font size */
+            line-height: 18px; /* Reduced line height */
+        }
+
+        /* Subtitle styling for Preferred Language */
+        .form-control .subtitle {
+            color: black; /* Changed to black */
+            font-weight: normal;
+            font-size: 12px; /* Reduced font size */
+            margin-bottom: 8px;
+        }
+
+        /* Input styling */
+        .form-control input,
+        .form-control select {
+            border: 1px solid #000;
+            border-radius: 0; /* Sharp corners */
+            font-family: inherit;
+            padding: 8px; /* Reduced padding */
+            display: block;
+            width: calc(100% - 16px);
+            background-color: #fff; /* White inside */
+            color: #333;
+            font-size: 12px; /* Reduced font size */
+        }
+
+        /* Hover effect for inputs */
+        .form-control input:hover {
+            border-color: black; /* Change border to black on hover */
+        }
+
+        /* Focus effect for inputs (when clicked) */
+        .form-control input:focus {
+            outline: none; /* Remove default blue outline */
+            border-color: black; /* Change border to black on focus */
+        }
+
+        /* Error styling */
+        .form-control.error input {
+            border-color: red; /* Red border for error */
+        }
+
+        /* Error message styling */
+        .error-message {
+            color: red;
+            font-size: 12px; /* Smaller font for error messages */
+            margin-top: 4px; /* Space between input and error message */
+        }
+
+        /* Button styling */
+        button {
+            background-color: #53545C; /* New button color */
+            border: 0;
+            border-radius: 0; /* Sharp corners */
+            font-family: inherit;
+            font-size: 14px; /* Adjusted font size */
+            display: block;
+            width: 100%; /* Full width */
+            margin-top: 10px; /* Adjusted margin */
+            color: #fff;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease, border 0.3s ease; /* Added transition for color */
+        }
+
+        /* Button hover with white background and black border */
+        button:hover {
+            background-color: white; /* Changed hover color to white */
+            color: #53545C; /* Text color on hover */
+            border: 1px solid black; /* Added black border */
+        }
+
+        /* Submission message styling */
+        .submission-message {
+            color: black;
+            text-align: center;
+            margin-top: 0px;
+        }
+
+        /* Legal notice styling */
+        .legal-notice {
+            color: grey; /* Legal notice color */
+            font-size: 10px; /* Reduced font size */
+            text-align: left;
+            margin-top: 8px; /* Margin for spacing */
+        }
+    </style>
+</head>
+<body>
+
+<form id="form">
+
+<div class="form-control">
+<label>Need help? I’m here for you. Let’s get started—tell me about yourself!</label>
+</div>
+
+<div class="form-control" id="name-control">
+<input type="text" id="name" name="name" placeholder="Name" />
+<div class="error-message" id="name-error" style="display: none;">This field is required.</div>
+</div>
+
+<div class="form-control" id="email-control">
+<input type="email" id="email" name="email" placeholder="Email" />
+<div class="error-message" id="email-error" style="display: none;">This field is required.</div>
+</div>
+
+<div class="form-control">
+<span class="subtitle">Preferred Language</span>
+<select id="language" name="language">
+<option value="English" selected>English</option>
+<option value="Spanish">Spanish</option>
+</select>
+<div class="legal-notice">I’m a bot. This means that my responses are automated and, although we strive for accuracy, may not be 100% accurate. By engaging in conversation with me, you agree to our Privacy Policy and other Terms.</div> 
+
+<div style="display: flex; justify-content: flex-end;">
+<button type="button" id="submit-btn">Start Chat</button> 
+</div>
+
+<div class="submission-message" style="display: none;"></div>
+</form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+        $(function () {
+            $("#submit-btn").click(function () {
+                // Retrieve form data
+                var name = $("#name").val().trim();
+                var email = $("#email").val().trim();
+                var language = $("#language").val();
+
+                // Reset error states
+                $(".error-message").hide();
+                $(".form-control").removeClass("error");
+
+                // Validate input fields
+                var hasError = false;
+
+                if (name === '') {
+                    $("#name-error").show();
+                    $("#name-control").addClass("error");
+                    hasError = true;
+                }
+
+                if (email === '') {
+                    $("#email-error").show();
+                    $("#email-control").addClass("error");
+                    hasError = true;
+                } else {
+                    // Validate email format
+                    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailPattern.test(email)) {
+                        $("#email-error").text('Please enter a valid email address.').show();
+                        $("#email-control").addClass("error");
+                        hasError = true;
+                    }
+                }
+
+                if (hasError) return;
+
+                var targetOrigin = ['https://www.altardstate.com/', 'https://www.tullabee.com/', 'https://www.arula.com/'];
+                // Send form data via postMessage
+                window.parent.postMessage(JSON.stringify({
+                    event_code: 'ym-client-event',
+                    data: JSON.stringify({
+                        event: {
+                            code: "userdetails",
+                            data: {
+                                name: name,
+                                email: email,
+                                language: language
+                            }
+                        }
+                    })
+                }), targetOrigin);
+
+                // Fade out the form and append thank you message
+                $("#submit-btn").fadeOut("slow", function () {
+                    $(".submission-message").fadeIn("slow").text("Thank you for your submission!");
+                });
+            });
+
+            // Add focusout event to inputs to show error if empty
+            $("#name, #email").on('focusout', function () {
+                if ($(this).val().trim() === '') {
+                    $(this).closest('.form-control').addClass('error');
+                    $(this).siblings('.error-message').show();
+                } else {
+                    $(this).closest('.form-control').removeClass('error');
+                    $(this).siblings('.error-message').hide();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
